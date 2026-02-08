@@ -258,9 +258,9 @@ function openCamera() {
     const resultBox = document.getElementById('cameraResult');
     const errorBox = document.getElementById('cameraError');
     
-    // Hide previous results
-    resultBox.classList.add('hidden');
+    // Hide only errors
     errorBox.classList.add('hidden');
+   
     
     // Check if camera is supported
     if (!cameraInput) {
