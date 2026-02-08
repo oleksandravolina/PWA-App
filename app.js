@@ -130,23 +130,19 @@ function setupOfflineDetection() {
    (Home, Features, About) without page reload.
 */
 function showView(viewId) {
-    console.log(`[App] Showing view: ${viewId}`);
-    
-    // Get all views
-    const views = document.querySelectorAll('.view');
-    
-    // Hide all views
-    views.forEach((view) => {
-        view.classList.remove('active');
-    });
-    
-    // Show selected view
-    const selectedView = document.getElementById(viewId);
-    if (selectedView) {
-        selectedView.classList.add('active');
-        // Scroll to top
-        selectedView.scrollTop = 0;
-    }
+  const views = document.querySelectorAll('.view');
+
+  views.forEach(view => view.classList.remove('active'));
+
+  const selectedView = document.getElementById(viewId);
+  if (selectedView) {
+    selectedView.classList.add('active');
+    selectedView.scrollTop = 0;
+  }
+
+  if (viewId === 'galleryView') {
+    showSavedPhotos();
+  }
 }
 
 /* ============================================
