@@ -24,6 +24,7 @@ dbRequest.onupgradeneeded = function (e) {
 dbRequest.onsuccess = function (e) {
   photoDB = e.target.result;
   console.log("DB ready");
+   loadPhotosFromDB();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -229,6 +230,15 @@ function savePhotoToDB(imageData) {
    Uses the HTML5 File Input with capture attribute
    to open the device camera interface.
 */
+function addPhotoToGallery(imageData) {
+  const gallery = document.getElementById("gallery");
+
+  const img = document.createElement("img");
+  img.src = imageData;
+
+  gallery.appendChild(img);
+}
+
 function openCamera() {
     console.log('[App] Opening camera...');
     
@@ -265,6 +275,8 @@ function openCamera() {
     const imageData = e.target.result;
 
     document.getElementById('capturedImage').src = imageData;
+           addPhotoToGallery(imageData);
+savePhotoToDB(imageData);
     resultBox.classList.remove('hidden');
 
     savePhotoToDB(imageData); // <<< TU ZAPIS
@@ -435,6 +447,17 @@ function showSavedPhotos() {
       img.src = photo.image;
       img.width = 100;
       container.appendChild(img);
+    });
+  };
+}
+function loadPhotosFromDB() {
+  const tx = photoDB.transaction("photos", "readonly");
+  const store = tx.objectStore("photos");
+  const request = store.getAll();
+
+  request.onsuccess = function () {
+    request.result.forEach(photo => {
+      addPhotoToGallery(photo.image);
     });
   };
 }
