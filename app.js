@@ -239,6 +239,18 @@ function addPhotoToGallery(imageData) {
   gallery.appendChild(img);
 }
 
+function addToGallery(imageData) {
+  const gallery = document.getElementById("gallery");
+
+  const img = document.createElement("img");
+  img.src = imageData;
+  img.style.width = "100px";
+  img.style.margin = "5px";
+  img.style.borderRadius = "8px";
+
+  gallery.appendChild(img);
+}
+
 function openCamera() {
     console.log('[App] Opening camera...');
     
@@ -271,15 +283,14 @@ function openCamera() {
         
         // Read the file and display it
         const reader = new FileReader();
-        reader.onload = (e) => {
-    const imageData = e.target.result;
+       reader.onload = (e) => {
+  const imageData = e.target.result;
 
-    document.getElementById('capturedImage').src = imageData;
-           addPhotoToGallery(imageData);
-savePhotoToDB(imageData);
-    resultBox.classList.remove('hidden');
+  document.getElementById('capturedImage').src = imageData;
+  document.getElementById('cameraResult').classList.remove('hidden');
 
-    savePhotoToDB(imageData); // <<< TU ZAPIS
+  addToGallery(imageData);   // <<< MINIATURKA
+  savePhotoToDB(imageData);  // <<< ZAPIS
 };
 
         };
@@ -428,7 +439,7 @@ function log(message) {
  * @param {string} message - The error message
  */
 function logError(message) {
-    console.error(`[App] ${message}`);
+    console.error(`[App] ${messaage}`);
 }
 
 console.log('[App] Script loaded');
@@ -457,7 +468,7 @@ function loadPhotosFromDB() {
 
   request.onsuccess = function () {
     request.result.forEach(photo => {
-      addPhotoToGallery(photo.image);
+      addToGallery(photo.image);
     });
   };
 }
