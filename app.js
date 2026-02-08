@@ -12,6 +12,19 @@
 /* ============================================
    INITIALIZATION
    ============================================ */
+let photoDB;
+
+const dbRequest = indexedDB.open("photoDatabase", 1);
+
+dbRequest.onupgradeneeded = function (e) {
+  photoDB = e.target.result;
+  photoDB.createObjectStore("photos", { keyPath: "id", autoIncrement: true });
+};
+
+dbRequest.onsuccess = function (e) {
+  photoDB = e.target.result;
+  console.log("DB ready");
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[App] Initializing...');
@@ -203,7 +216,11 @@ function getGeolocation() {
         }
     );
 }
-
+function savePhotoToDB(imageData) {
+  const tx = photoDB.transaction("photos", "readwrite");
+  const store = tx.objectStore("photos");
+  store.add({ image: imageData });
+}
 /* ============================================
    CAMERA API
    ============================================
@@ -245,8 +262,14 @@ function openCamera() {
         // Read the file and display it
         const reader = new FileReader();
         reader.onload = (e) => {
-            document.getElementById('capturedImage').src = e.target.result;
-            resultBox.classList.remove('hidden');
+    const imageData = e.target.result;
+
+    document.getElementById('capturedImage').src = imageData;
+    resultBox.classList.remove('hidden');
+
+    savePhotoToDB(imageData); // <<< TU ZAPIS
+};
+
         };
         reader.readAsDataURL(file);
     };
@@ -397,3 +420,21 @@ function logError(message) {
 }
 
 console.log('[App] Script loaded');
+
+function showSavedPhotos() {
+  const tx = photoDB.transaction("photos", "readonly");
+  const store = tx.objectStore("photos");
+  const request = store.getAll();
+
+  request.onsuccess = function () {
+    const container = document.getElementById("savedPhotos");
+    container.innerHTML = "";
+
+    request.result.forEach(photo => {
+      const img = document.createElement("img");
+      img.src = photo.image;
+      img.width = 100;
+      container.appendChild(img);
+    });
+  };
+}
