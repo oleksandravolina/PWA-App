@@ -325,14 +325,22 @@ h2 {
     }
 }
 
-/* Desktop */
 @media (min-width: 900px) {
     .app-container {
         max-width: 800px;
     }
 }
+
+/* GALLERY MINIATURES */
 #gallery img {
   width: 100px;
   margin: 5px;
   border-radius: 8px;
+}
+
+/* FULL GALLERY VIEW */
+#savedPhotos img {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 10px;
 }
